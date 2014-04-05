@@ -27,6 +27,9 @@ abstract class AbstractCollector implements CollectorInterface
         'o:Symfony\Component\VarDebug\Exception\ThrowingCasterException'
                            => 'Symfony\Component\VarDebug\Caster\ExceptionCaster::castThrowingCasterException',
 
+        'o:PDO'            => 'Symfony\Component\VarDebug\Caster\PdoCaster::castPdo',
+        'o:PDOStatement'   => 'Symfony\Component\VarDebug\Caster\PdoCaster::castPdoStatement',
+
         'o:SplDoublyLinkedList' => 'Symfony\Component\VarDebug\Caster\SplCaster::castSplDoublyLinkedList',
         'o:SplFixedArray'       => 'Symfony\Component\VarDebug\Caster\SplCaster::castSplFixedArray',
         'o:SplHeap'             => 'Symfony\Component\VarDebug\Caster\SplCaster::castIterator',
