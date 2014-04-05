@@ -1,0 +1,22 @@
+{
+    "name": "symfony/var-debug",
+    "type": "library",
+    "description": "Symfony debug tools for PHP variables",
+    "keywords": ["dump", "debug"],
+    "homepage": "http://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Grekas",
+            "email": "p@tchwork.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "files": [ "Resources/functions/debug.php" ],
+        "psr-0": { "Symfony\\Component\\VarDebug\\": "" }
+    },
+    "target-dir": "Symfony/Component/ClassLoader"
+}
