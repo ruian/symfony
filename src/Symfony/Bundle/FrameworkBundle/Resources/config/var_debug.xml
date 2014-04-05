@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="var_debug.collector.class"><!-- empty for auto-selection --></parameter>
+        <parameter key="var_debug.dumper.json.class">Symfony\Component\VarDebug\Dumper\JsonDumper</parameter>
+        <parameter key="var_debug.dumper.html.class">Symfony\Component\VarDebug\Dumper\HtmlDumper</parameter>
+        <parameter key="var_debug.dumper.cli.class">Symfony\Component\VarDebug\Dumper\CliDumper</parameter>
+    </parameters>
+
+    <services>
+        <service id="var_debug.collector" class="%var_debug.collector.class%">
+        </service>
+
+        <service id="var_debug.dumper.json" class="%var_debug.dumper.json.class%">
+        </service>
+
+        <service id="var_debug.dumper.html" class="%var_debug.dumper.html.class%">
+        </service>
+
+        <service id="var_debug.dumper.cli" class="%var_debug.dumper.cli.class%">
+        </service>
+    </services>
+
+</container>

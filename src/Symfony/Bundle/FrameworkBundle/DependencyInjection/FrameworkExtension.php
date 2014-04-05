@@ -130,6 +130,21 @@ class FrameworkExtension extends Extension
             $loader->load('serializer.xml');
         }
 
+        $loader->load('var_debug.xml');
+
+        if (!$container->getParameter('var_debug.collector.class')) {
+            $container->setParameter(
+                'var_debug.collector.class',
+                'Symfony\Component\VarDebug\Collector\\'.(extension_loaded('symfony_debug') ? 'Ext' : 'Php').'Collector'
+            );
+        }
+
+        if (isset($config['var_debug'])) {
+            $container->getDefinition('var_debug.collector')
+                ->addMethodCall('setMaxItems',  $config['var_debug']['max_items'])
+                ->addMethodCall('setMaxString', $config['var_debug']['max_string']);
+        }
+
         $this->addClassesToCompile(array(
             'Symfony\\Component\\Config\\FileLocator',
 

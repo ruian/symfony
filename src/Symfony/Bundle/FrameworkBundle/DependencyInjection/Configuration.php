@@ -91,6 +91,7 @@ class Configuration implements ConfigurationInterface
         $this->addValidationSection($rootNode);
         $this->addAnnotationsSection($rootNode);
         $this->addSerializerSection($rootNode);
+        $this->addVarDebugSection($rootNode);
 
         return $treeBuilder;
     }
@@ -496,5 +497,27 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
         ;
+    }
+
+    private function addVarDebugSection(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('var_debug')
+                    ->info('va_debug configuration')
+                    ->children()
+                        ->integerNode('max_items')
+                            ->info('Max number of displayed items, all levels included, 0 means no limit, -1 only first level')
+                            ->min(0)
+                            ->defaultValue(500)
+                        ->end()
+                        ->integerNode('max_string')
+                            ->info('Max length of displayed strings, 0 means no limit')
+                            ->min(0)
+                            ->defaultValue(5000)
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
     }
 }
