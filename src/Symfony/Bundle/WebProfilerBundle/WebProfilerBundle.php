@@ -20,4 +20,13 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class WebProfilerBundle extends Bundle
 {
+    public function boot()
+    {
+        $container = $this->container;
+
+        set_debug_handler(function ($var) use ($container) {
+            $data = $container->get('var_debug.collector')->collect($var);
+            $container->get('data_collector.var_debug')->dump($data);
+        });
+    }
 }

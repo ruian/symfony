@@ -1,0 +1,65 @@
+{% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
+
+{% block toolbar %}
+
+    {% set dumps_count = collector.dumps|length %}
+
+    {% set icon %}
+        <img alt="debug()" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAt1BMVEUAAAANDQ0AAAAhISESEhIAAABEREQAAAAAAAAQEBAAAAAAAAAFBQUMDAwVFRU2NjYJCQkGBgYNDQ0AAAA+Pj5FRUUuLi4QEBAuLi41NTUICAgFBQUAAAAAAAA6Ojo+Pj4jIyMJCQkEBAQAAAATExMqKipAQEAbGxssLCwAAAA6OjoKCgodHR0fHx89PT0ZGRlKSkpOTk5PT09dXV1SUlJaWlpYWFhGRkZVVVVERERiYmJUVFRISEj7yUYlAAAAOHRSTlMAahiweAX4AgFvCAo4Y4TjUyxmKO773HLO3EQ2JBHv/bRYOw59xPWW0B/5T56o5o7//////////vCDrPIAAAGKSURBVCjPbVPneoMwDBQrQPYgjCxSMpu2qQcz8fs/V22RfDSl+oGFzrKl0xl+mQP7zAUb/jPb2X3eTjunjWJCz7h9dQH+wo4DoE8GEY8GEx1/X9ImrlFxfue8Y7gTjDTYW5Txe3jNrmHJs2jcoHLVCk6NqT7ke326ZbwaPFFH5hWZN90BmNwFWGteNh+rOCbORrn3AdBFUJY79vJoBXadqOU0kJtsBOUCJs0HElFN6dv80JVBC0zJkCXRXpgb6/rWlaAaKEMQzaXFu2KlvxiWXmJbliXvzAPoSs9OvHK4WMKIEpqyeUcZOZgHgp5gKSXiAVKiLA3NMEWPIojHpsfpst/vJ7NT+T1LpLfUjqk8FgsqxLOg8lFQQCpVELbCVCsgW0ld+VWtMGwFSWAikLseoCJBMCShpo9tavrSAOnbMB/pq4mP6UZTxDMkfkNjJP45sphWamRMjayiMY6sGbZPqDiPyOgsKPFx2K8yuRAiCLnUMmkLzCd+I7CWNEkjzbaoRVvUzXOoXp7DD5aJLSEAGSFlAAAAAElFTkSuQmCC" />
+        <span class="sf-toolbar-status{% if dumps_count > 0 %} sf-toolbar-status-yellow{% endif %}">{{ dumps_count }}</span>
+    {% endset %}
+    {% if dumps_count %}
+    {% set text %}
+        <div class="sf-toolbar-info-piece">
+            <b>debug()</b>
+            <ul>
+                {% for dump in collector.dumps %}
+                <li>
+                in {% if dump.file %}<abbr title="{{ dump.file }}">{{ dump.name }}</abbr>{% else %}{{ dump.name }}{% endif %}
+                on line {{ dump.line }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endset %}
+    {% endif %}
+    {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': true } %}
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block menu %}
+    <span class="label">
+        <span class="icon">{% spaceless %}
+        <img alt="debug()" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACoAAAAeCAMAAABt9nzSAAAAsVBMVEUAAAAFBQUJCQkAAAAAAAAFBQUKCgoAAAAAAAAAAAA5OTkVFRUbGxsUFBQdHR0uLi4EBAQSEhIoKCgMDAweHh4QEBAAAAABAQEuLi5EREQICAgxMTE8PDw3NzcvLy83NzcwMDAmJiYAAAAMDAwyMjIgICAAAABHR0coKCg9PT0rKytCQkIvLy9JSUlDQ0M7OztSUlI9PT1LS0tXV1dGRkZaWlpWVlZUVFRNTU04ODg5OTnAKvQaAAAALXRSTlMAM0YaDy1OAQME3XyReJzdN3LSVZZqCiTu7j7F8OP+1dDEDFvdsAn7qfW1/OE2hZtPAAABs0lEQVQ4y41U2XLCMAxUTufkCKRAgVJK22k742DHOfn/D6vs0E47jgf2SYidjaSVDBoC8OotAAEdOnVRb5w7qCQAmNedhQG5SSThpG5Pg74ZqLPKPzZCCHZY+g9AiLnKMN6IWrRNK+paHHxjcwTcL9TbznOx8ZOoESw1cAm8bJsmsgmsmgjATcumiU3UpGVbR861jWRLNm2ZLwO90MeOPb9DGILHIjkI5LID9jYiumTVDEIIFFVxU6bJqrwTsQQCQgZVQnDGbsSWY154XWcP0QqpA5bsWfu887iYdDvv3UWQWbd/cCXCvKNz33L/Mn1Ky7KkhUK1s+OfsJTp3X9qRUt6RVnY8e8Pmd5pBdDPhTezrJl3onsLgVFMqxQL0Nqq6E9b9BUGJFS2pQ/rlSYQqmEhlQQYuHs6NiwCk4pfLaimVwuqQlmgG8uL7EUZW0wHY89FhsaOrktRHHFdFDUAyeQoOr6ER86ncgmlqpteOI+BmFb7jfPzcZ7ztZ9MMYwxaT6Y9ZmfJZCYmQ9G/eHkb+vL5dJnE3WGN4+777XjNj0Z/dPtJ2PQOvVr5843y3vKxhr6Bke2MIQiaFFEAAAAAElFTkSuQmCC" />
+            {% endspaceless %}</span>
+        <strong>debug()</strong>
+        <span class="count">
+            <span>{{ collector.dumps|length }}</span>
+        </span>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    <h2>debug()</h2>
+
+    <link rel="stylesheet" href="{{ asset('bundles/webprofiler/css/var_debug.css') }}" />
+    <script src="{{ asset('bundles/webprofiler/js/var_debug.js') }}"></script>
+
+    <ul id="var_debug" class="alt">
+        {% for dump in collector.dumps %}
+        <li class="dump sf-reset">
+            in {% if dump.file %}<abbr title="{{ dump.file }}">{{ dump.name }}</abbr>{% else %}{{ dump.name }}{% endif %}
+            on line {{ dump.line }}:
+            <a onclick="arrayToggle(this)"> ⊞ </a><span class="key"></span>
+            <span class="array-compact">
+            {% if dump.excerpt %}{{ dump.excerpt|raw }}{% else %}{{ dump.file|file_excerpt(dump.line) }}{% endif %}
+            </span>
+
+            <pre class="event"><script>document.write(htmlizeEvent({{ dump.json|raw }}))</script></pre>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

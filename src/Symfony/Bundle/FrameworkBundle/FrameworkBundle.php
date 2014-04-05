@@ -54,6 +54,13 @@ class FrameworkBundle extends Bundle
         if ($trustedHosts = $this->container->getParameter('kernel.trusted_hosts')) {
             Request::setTrustedHosts($trustedHosts);
         }
+
+        $container = $this->container;
+
+        set_debug_handler(function ($var) use ($container) {
+            $data = $container->get('var_debug.collector')->collect($var);
+            $container->get('var_debug.dumper.cli')->dump($data);
+        });
     }
 
     public function build(ContainerBuilder $container)
