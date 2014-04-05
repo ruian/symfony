@@ -25,6 +25,7 @@
         <parameter key="twig.translation.extractor.class">Symfony\Bridge\Twig\Translation\TwigExtractor</parameter>
         <parameter key="twig.exception_listener.class">Symfony\Component\HttpKernel\EventListener\ExceptionListener</parameter>
         <parameter key="twig.controller.exception.class">Symfony\Bundle\TwigBundle\Controller\ExceptionController</parameter>
+        <parameter key="twig.extension.var_debug.class">Symfony\Bridge\Twig\Extension\VarDebugExtension</parameter>
     </parameters>
 
     <services>
@@ -131,6 +132,10 @@
         <service id="twig.controller.exception" class="%twig.controller.exception.class%">
             <argument type="service" id="twig" />
             <argument>%kernel.debug%</argument>
+        </service>
+
+        <service id="twig.extension.var_debug" class="%twig.extension.var_debug.class%" public="false">
+            <tag name="twig.extension" />
         </service>
     </services>
 </container>
