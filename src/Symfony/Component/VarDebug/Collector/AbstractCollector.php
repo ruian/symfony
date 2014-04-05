@@ -22,6 +22,9 @@ abstract class AbstractCollector implements CollectorInterface
         'o:Closure'        => 'Symfony\Component\VarDebug\Caster\BaseCaster::castClosure',
         'o:Reflector'      => 'Symfony\Component\VarDebug\Caster\BaseCaster::castReflector',
 
+        'o:Doctrine\Common\Proxy\Proxy' => 'Symfony\Component\VarDebug\Caster\DoctrineCaster::castCommonProxy',
+        'o:Doctrine\ORM\Proxy\Proxy'    => 'Symfony\Component\VarDebug\Caster\DoctrineCaster::castOrmProxy',
+
         'o:ErrorException' => 'Symfony\Component\VarDebug\Caster\ExceptionCaster::castErrorException',
         'o:Exception'      => 'Symfony\Component\VarDebug\Caster\ExceptionCaster::castException',
         'o:Symfony\Component\VarDebug\Exception\ThrowingCasterException'
