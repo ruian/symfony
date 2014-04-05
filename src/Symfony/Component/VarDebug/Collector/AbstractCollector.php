@@ -18,12 +18,38 @@ use Symfony\Component\VarDebug\Exception\ThrowingCasterException;
  */
 abstract class AbstractCollector implements CollectorInterface
 {
+    public static $defaultCasters = array(
+        'o:Closure'        => 'Symfony\Component\VarDebug\Caster\BaseCaster::castClosure',
+        'o:Reflector'      => 'Symfony\Component\VarDebug\Caster\BaseCaster::castReflector',
+
+        'r:dba'            => 'Symfony\Component\VarDebug\Caster\BaseCaster::castDba',
+        'r:dba persistent' => 'Symfony\Component\VarDebug\Caster\BaseCaster::castDba',
+        'r:gd'             => 'Symfony\Component\VarDebug\Caster\BaseCaster::castGd',
+        'r:mysql link'     => 'Symfony\Component\VarDebug\Caster\BaseCaster::castMysqlLink',
+        'r:process'        => 'Symfony\Component\VarDebug\Caster\BaseCaster::castProcess',
+        'r:stream'         => 'Symfony\Component\VarDebug\Caster\BaseCaster::castStream',
+    );
+
     protected $maxItems = 500;
     protected $maxString = 5000;
 
+    private $casters = array();
     private $data = array(array(null));
     private $prevErrorHandler = null;
 
+
+    public function __construct(array $defaultCasters = null)
+    {
+        isset($defaultCasters) or $defaultCasters = static::$defaultCasters;
+        $this->addCasters($defaultCasters);
+    }
+
+    public function addCasters(array $casters)
+    {
+        foreach ($casters as $type => $callback) {
+            $this->casters[strtolower($type)][] = $callback;
+        }
+    }
 
     public function setMaxItems($maxItems)
     {
@@ -57,12 +83,31 @@ abstract class AbstractCollector implements CollectorInterface
     {
         $a = (array) $obj;
 
+        $p = array($class => $class)
+            + class_parents($obj)
+            + class_implements($obj)
+            + array('*' => '*');
+
+        foreach (array_reverse($p) as $p) {
+            if (!empty($this->casters[$p = 'o:'.strtolower($p)])) {
+                foreach ($this->casters[$p] as $p) {
+                    $a = $this->callCaster($p, $obj, $a);
+                }
+            }
+        }
+
         return $a;
     }
 
     protected function castResource($type, $res)
     {
         $a = array();
+
+        if (!empty($this->casters['r:'.$type])) {
+            foreach ($this->casters['r:'.$type] as $c) {
+                $a = $this->callCaster($c, $res, $a);
+            }
+        }
 
         return $a;
     }
