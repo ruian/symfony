@@ -30,7 +30,6 @@ class JsonDumper extends AbstractDumper implements DumperInterface
     protected $refsPos = array();
     protected $refs = array();
 
-
     public function dumpScalar(Cursor $cursor, $type, $val)
     {
         if ('string' === $type) {
@@ -41,16 +40,15 @@ class JsonDumper extends AbstractDumper implements DumperInterface
             return;
         }
 
-        switch (true)
-        {
-        case null === $val: $this->line .= 'null'; break;
-        case true === $val: $this->line .= 'true'; break;
-        case false === $val: $this->line .= 'false'; break;
-        case INF === $val: $this->line .= '"n`INF"'; break;
-        case -INF === $val: $this->line .= '"n`-INF"'; break;
-        case is_nan($val): $this->line .= '"n`NAN"'; break;
-        case $val > 9007199254740992 && is_int($val): $val = '"n`'.$val.'"'; // JavaScript max integer is 2^53
-        default: $this->line .= (string) $val; break;
+        switch (true) {
+            case null === $val: $this->line .= 'null'; break;
+            case true === $val: $this->line .= 'true'; break;
+            case false === $val: $this->line .= 'false'; break;
+            case INF === $val: $this->line .= '"n`INF"'; break;
+            case -INF === $val: $this->line .= '"n`-INF"'; break;
+            case is_nan($val): $this->line .= '"n`NAN"'; break;
+            case $val > 9007199254740992 && is_int($val): $val = '"n`'.$val.'"'; // JavaScript max integer is 2^53
+            default: $this->line .= (string) $val; break;
         }
 
         $this->endLine($cursor);
@@ -75,65 +73,65 @@ class JsonDumper extends AbstractDumper implements DumperInterface
         $this->endLine($cursor);
     }
 
-    public function enterArray(Cursor $cursor, $count, $cut, $indexed)
+    public function enterArray(Cursor $cursor, $count, $indexed, $children, $cut)
     {
         if ($indexed && $cursor->depth) {
             if ($this->dumpKey($cursor)) {
                 return;
             }
             $this->line .= '[';
-            if ($cursor->dumpedChildren) {
+            if ($children) {
                 $this->dumpLine($cursor->depth);
             }
         } else {
-            $this->enterHash($cursor, 'array:'.$count);
+            $this->enterHash($cursor, 'array:'.$count, $children);
         }
     }
 
-    public function leaveArray(Cursor $cursor, $count, $cut, $indexed)
+    public function leaveArray(Cursor $cursor, $count, $indexed, $children, $cut)
     {
-        $this->leaveHash($cursor, $cut, $indexed && $cursor->depth ? ']' : '}');
+        $this->leaveHash($cursor, $indexed && $cursor->depth ? ']' : '}', $children, $cut);
     }
 
-    public function enterObject(Cursor $cursor, $class, $cut)
+    public function enterObject(Cursor $cursor, $class, $children, $cut)
     {
-        $this->enterHash($cursor, $class);
+        $this->enterHash($cursor, $class, $children);
     }
 
-    public function leaveObject(Cursor $cursor, $class, $cut)
+    public function leaveObject(Cursor $cursor, $class, $children, $cut)
     {
-        $this->leaveHash($cursor, $cut, '}');
+        $this->leaveHash($cursor, '}', $children, $cut);
     }
 
-    public function enterResource(Cursor $cursor, $res, $cut)
+    public function enterResource(Cursor $cursor, $res, $children, $cut)
     {
-        $this->enterHash($cursor, 'resource:'.$res);
+        $this->enterHash($cursor, 'resource:'.$res, $children);
     }
 
-    public function leaveResource(Cursor $cursor, $res, $cut)
+    public function leaveResource(Cursor $cursor, $res, $children, $cut)
     {
-        $this->leaveHash($cursor, $cut, '}');
+        $this->leaveHash($cursor, '}', $children, $cut);
     }
 
-    protected function enterHash(Cursor $cursor, $type)
+    protected function enterHash(Cursor $cursor, $type, $children)
     {
         if ($this->dumpKey($cursor)) {
             return;
         }
 
         $this->line .= '{"_":"'.$this->position.':'.$type.'"';
-        if ($cursor->dumpedChildren) {
+        if ($children) {
             $this->line .= ',';
             $this->dumpLine($cursor->depth);
         }
     }
 
-    protected function leaveHash(Cursor $cursor, $cut, $suffix)
+    protected function leaveHash(Cursor $cursor, $suffix, $children, $cut)
     {
         if (false !== $cursor->refTo) {
             return;
         }
-        if (!$cursor->dumpedChildren && $cut) {
+        if (!$children && $cut) {
             $this->line .= ',"__cutBy": '.$cut;
         }
         $this->line .= $suffix;
@@ -192,10 +190,10 @@ class JsonDumper extends AbstractDumper implements DumperInterface
         if (false !== $cursor->refTo) {
             $ref = $this->refsPos[$cursor->refTo];
             if ($cursor->refIsHard) {
-                $this->refs[$ref][] = $this->position;
+                $this->refs[$ref][] = -$this->position;
                 $ref = 'R`'.$this->position.':'.$ref;
             } else {
-                $this->refs[$ref][] = -$this->position;
+                $this->refs[$ref][] = $this->position;
                 $ref = 'r`'.$this->position.':'.$ref;
             }
             $this->line .= $this->encodeString($ref);

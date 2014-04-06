@@ -19,9 +19,9 @@ use Symfony\Component\VarDebug\Dumper\CliDumper;
  */
 class CliDumperTest extends \PHPUnit_Framework_TestCase
 {
-    function testGet()
+    public function testGet()
     {
-        require __DIR__.'/Fixtures/dum-var.php';
+        require __DIR__.'/Fixtures/dumb-var.php';
 
         $dumper = new CliDumper('php://output');
         $dumper->setColors(false);
@@ -31,6 +31,8 @@ class CliDumperTest extends \PHPUnit_Framework_TestCase
         ob_start();
         $dumper->dump($data);
         $out = ob_get_clean();
+        $closureLabel = PHP_VERSION_ID >= 50400 ? 'public method' : 'function';
+        $out = preg_replace('/[ \t]+$/m', '', $out);
 
         $this->assertSame(
             <<<EOTXT
@@ -60,16 +62,16 @@ class CliDumperTest extends \PHPUnit_Framework_TestCase
   8: resource:Unknown{}
   obj: stdClass{} #2
   closure: Closure{
-    reflection: 
-      Closure [ <user> public method {closure} ] {
+    reflection:
+      Closure [ <user> {$closureLabel} {closure} ] {
         @@ {$var['file']} {$var['line']} - {$var['line']}
-      
+
         - Parameters [2] {
           Parameter #0 [ <required> \$a ]
           Parameter #1 [ <optional> PDO or NULL &\$b = NULL ]
         }
       }
-      
+
   }
   line: {$var['line']}
   nobj: [
@@ -82,7 +84,7 @@ class CliDumperTest extends \PHPUnit_Framework_TestCase
   sobj: stdClass{@2}
   snobj: stdClass{&3}
   snobj2: stdClass{@3}
-  file: /home/nicolas.grekas/Clones/symfony/src/Symfony/Component/VarDebug/Tests/Fixtures/dum-var.php
+  file: {$var['file']}
 ]
 
 EOTXT

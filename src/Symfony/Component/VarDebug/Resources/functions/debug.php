@@ -36,7 +36,7 @@ if (!function_exists('debug')) {
                     $dumper->dump($collector->collect($var));
                 };
             } else {
-                $h['handler'] = function ($var) {var_dump($var);};
+                $h['handler'] = 'var_dump';
             }
             set_debug_handler($h['handler']);
         }
@@ -44,12 +44,16 @@ if (!function_exists('debug')) {
         return $h['handler']($var);
     }
 
-    function set_debug_handler(\Closure $closure)
+    function set_debug_handler($callable)
     {
         static $handler = null;
 
+        if (!is_callable($callable)) {
+            throw new \InvalidArgumentException('Invalid PHP callback.');
+        }
+
         $h = $handler;
-        $handler = $closure;
+        $handler = $callable;
 
         return $h;
     }

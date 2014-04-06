@@ -23,10 +23,10 @@ interface DumperInterface
     public function dumpEnd();
     public function dumpScalar(Cursor $cursor, $type, $value);
     public function dumpString(Cursor $cursor, $str, $bin, $cut);
-    public function enterArray(Cursor $cursor, $count, $cut, $indexed);
-    public function leaveArray(Cursor $cursor, $count, $cut, $indexed);
-    public function enterObject(Cursor $cursor, $class, $cut);
-    public function leaveObject(Cursor $cursor, $class, $cut);
-    public function enterResource(Cursor $cursor, $res, $cut);
-    public function leaveResource(Cursor $cursor, $res, $cut);
+    public function enterArray(Cursor $cursor, $count, $indexed, $children, $cut);
+    public function leaveArray(Cursor $cursor, $count, $indexed, $children, $cut);
+    public function enterObject(Cursor $cursor, $class, $children, $cut);
+    public function leaveObject(Cursor $cursor, $class, $children, $cut);
+    public function enterResource(Cursor $cursor, $res, $children, $cut);
+    public function leaveResource(Cursor $cursor, $res, $children, $cut);
 }

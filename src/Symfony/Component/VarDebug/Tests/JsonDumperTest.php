@@ -19,9 +19,9 @@ use Symfony\Component\VarDebug\Dumper\JsonDumper;
  */
 class JsonDumperTest extends \PHPUnit_Framework_TestCase
 {
-    function testGet()
+    public function testGet()
     {
-        require __DIR__.'/Fixtures/dum-var.php';
+        require __DIR__.'/Fixtures/dumb-var.php';
 
         $dumper = new JsonDumper();
         $collector = new PhpCollector();
@@ -34,6 +34,7 @@ class JsonDumperTest extends \PHPUnit_Framework_TestCase
             $json[] = str_repeat('  ', $depth).$line;
         });
         $json = implode("\n", $json);
+        $closureLabel = PHP_VERSION_ID >= 50400 ? 'public method' : 'function';
 
         $this->assertSame(
 '{"_":"1:array:24",
@@ -62,7 +63,7 @@ class JsonDumperTest extends \PHPUnit_Framework_TestCase
   "n`8": {"_":"23:resource:Unknown"},
   "obj": {"_":"24:stdClass"},
   "closure": {"_":"25:Closure",
-    "~:reflection": "Closure [ <user> public method {closure} ] {\n  @@ '.$var['file'].' '.$var['line'].' - '.$var['line'].'\n\n  - Parameters [2] {\n    Parameter #0 [ <required> $a ]\n    Parameter #1 [ <optional> PDO or NULL &$b = NULL ]\n  }\n}\n"
+    "~:reflection": "Closure [ <user> '.$closureLabel.' {closure} ] {\n  @@ '.$var['file'].' '.$var['line'].' - '.$var['line'].'\n\n  - Parameters [2] {\n    Parameter #0 [ <required> $a ]\n    Parameter #1 [ <optional> PDO or NULL &$b = NULL ]\n  }\n}\n"
   },
   "line": '.$var['line'].',
   "nobj": [
@@ -76,7 +77,7 @@ class JsonDumperTest extends \PHPUnit_Framework_TestCase
   "snobj": "R`34:29",
   "snobj2": "r`35:29",
   "file": "'.$var['file'].'",
-  "__refs": {"30":[31],"3":[32],"24":[-33],"29":[34,-35]}
+  "__refs": {"30":[-31],"3":[-32],"24":[33],"29":[-34,35]}
 }
 ',
             $json

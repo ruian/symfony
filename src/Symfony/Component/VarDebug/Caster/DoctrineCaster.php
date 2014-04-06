@@ -11,12 +11,15 @@
 
 namespace Symfony\Component\VarDebug\Caster;
 
+use Doctrine\Common\Proxy\Proxy as CommonProxy;
+use Doctrine\ORM\Proxy\Proxy as OrmProxy;
+
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
 class DoctrineCaster
 {
-    public static function castCommonProxy(\Doctrine\Common\Proxy\Proxy $p, array $a)
+    public static function castCommonProxy(CommonProxy $p, array $a)
     {
         unset(
             $a['__cloner__'],
@@ -27,7 +30,7 @@ class DoctrineCaster
         return $a;
     }
 
-    public static function castOrmProxy(\Doctrine\ORM\Proxy\Proxy $p, array $a)
+    public static function castOrmProxy(OrmProxy $p, array $a)
     {
         $p = "\0".get_class($p)."\0";
         unset(

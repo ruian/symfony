@@ -14,7 +14,7 @@ Its behavior is about the same as:
 
     function symfony_zval_info($key, $array, $options = 0)
     {
-        // $options is currenlty not used, but could be in future version.
+        // $options is currently not used, but could be in future version.
 
         if (!array_key_exists($key, $array)) {
             return null;

@@ -1,7 +1,7 @@
-"use strict";
-
 function htmlizeEvent(data, refs, filter)
 {
+    "use strict";
+
     var iRefs = {},
         depth,
         counter,
@@ -228,6 +228,8 @@ function htmlizeEvent(data, refs, filter)
 
 function arrayToggle(a)
 {
+    "use strict";
+
     var s = a.nextElementSibling.nextElementSibling;
 
     if ('array-compact' == s.className)

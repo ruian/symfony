@@ -30,5 +30,4 @@ class Cursor
     public $hashIndex = 0;
     public $hashLength = 0;
     public $hashCut = 0;
-    public $dumpedChildren = 0;
 }

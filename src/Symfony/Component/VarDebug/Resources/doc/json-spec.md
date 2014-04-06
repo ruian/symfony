@@ -272,7 +272,7 @@ possible to dump it not-truncated there.
 
 `` R` `` and `` r` `` may optionally be concatenated to the current position
 number, followed by a `:` and again optionally by the position of the previous
-occurence associated to the current position.
+occurrence associated to the current position.
 
 When internal references are collected in this way, a special key `"__refs"`
 must be inserted at the last position at the lowest depth in the main structure.
@@ -298,7 +298,7 @@ implementations complying with this description the freedom not to populate them
 when the computational cost is not worth it.
 
 Conversely where possible, the presence of these numbers can help interpreting
-the JSON, eventhough the special `"__refs"` key is the only place that always
+the JSON, even though the special `"__refs"` key is the only place that always
 contains all the information available.
 
 Examples

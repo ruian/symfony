@@ -38,7 +38,6 @@ class HtmlDumper extends CliDumper
         'meta'      => 'color:#005FFF',
     );
 
-
     public function __construct($outputStream = null)
     {
         parent::__construct($outputStream);

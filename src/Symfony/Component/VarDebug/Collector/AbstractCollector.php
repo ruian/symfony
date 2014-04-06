@@ -47,13 +47,12 @@ abstract class AbstractCollector implements CollectorInterface
         'r:stream'         => 'Symfony\Component\VarDebug\Caster\BaseCaster::castStream',
     );
 
-    protected $maxItems = 500;
-    protected $maxString = 5000;
+    protected $maxItems = 1000;
+    protected $maxString = 10000;
 
     private $casters = array();
     private $data = array(array(null));
     private $prevErrorHandler = null;
-
 
     public function __construct(array $defaultCasters = null)
     {
@@ -84,12 +83,13 @@ abstract class AbstractCollector implements CollectorInterface
         try {
             $data = $this->doCollect($var);
         } catch (\Exception $e) {
-            restore_error_handler();
-
-            throw $e;
         }
         restore_error_handler();
         $this->prevErrorHandler = null;
+
+        if (isset($e)) {
+            throw $e;
+        }
 
         return new Data($data);
     }
@@ -133,10 +133,10 @@ abstract class AbstractCollector implements CollectorInterface
     {
         try {
             // Ignore invalid $callback
-            $callback = @call_user_func($callback, $obj, $a);
+            $cast = @call_user_func($callback, $obj, $a);
 
-            if (is_array($callback)) {
-                $a = $callback;
+            if (is_array($cast)) {
+                $a = $cast;
             }
         } catch (\Exception $e) {
             $a["\0~\0⚠"] = new ThrowingCasterException($callback, $e);
