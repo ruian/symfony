@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\VarDebug\Caster;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Proxy\Proxy as CommonProxy;
 use Doctrine\ORM\Proxy\Proxy as OrmProxy;
 
@@ -26,6 +27,13 @@ class DoctrineCaster
             $a['__initializer__'],
             $a['__isInitialized__']
         );
+
+        return $a;
+    }
+
+    public static function castCollection(Collection $c, array $a)
+    {
+        $a = array_merge($a, $c->toArray());
 
         return $a;
     }
