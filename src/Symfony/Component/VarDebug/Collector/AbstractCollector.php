@@ -98,7 +98,12 @@ abstract class AbstractCollector implements CollectorInterface
 
     protected function castObject($class, $obj)
     {
-        $a = (array) $obj;
+        if (method_exists($obj, '__debugInfo')) {
+            $a = $this->callCaster(array($this, '__debugInfo'), $obj, array());
+            $a or $a = (array) $obj;
+        } else {
+            $a = (array) $obj;
+        }
 
         $p = array($class => $class)
             + class_parents($obj)
