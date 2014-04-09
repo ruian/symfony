@@ -11,6 +11,8 @@
 
 namespace Symfony\Bridge\Twig\Extension;
 
+use Symfony\Bridge\Twig\TokenParser\DebugTokenParser;
+
 /**
  * Provides integration of the VarDebug component with Twig.
  *
@@ -18,40 +20,16 @@ namespace Symfony\Bridge\Twig\Extension;
  */
 class VarDebugExtension extends \Twig_Extension
 {
-    public function getFunctions()
+    /**
+     * {@inheritdoc}
+     */
+    public function getTokenParsers()
     {
-        return array(
-            new \Twig_SimpleFunction('debug', array($this, 'debug'), array('is_safe' => array('html'), 'needs_context' => true, 'needs_environment' => true)),
-        );
+        return array(new DebugTokenParser());
     }
 
     public function getName()
     {
         return 'var_debug';
-    }
-
-    public function debug(\Twig_Environment $env, $context)
-    {
-        if (!$env->isDebug()) {
-            return;
-        }
-
-        $count = func_num_args();
-        if (2 === $count) {
-            $vars = array();
-            foreach ($context as $key => $value) {
-                if (! $value instanceof \Twig_Template) {
-                    $vars[$key] = $value;
-                }
-            }
-        } elseif (3 === $count) {
-            $vars = func_get_arg(2);
-        } else {
-            $vars = array_slice(func_get_args(), 2);
-        }
-
-        debug($vars);
-
-        return '';
     }
 }
